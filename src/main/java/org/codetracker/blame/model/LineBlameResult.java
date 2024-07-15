@@ -64,15 +64,15 @@ public class LineBlameResult {
     public int getLineNumber() {
         return lineNumber;
     }
-    public static LineBlameResult of(History.HistoryInfo<? extends CodeElement> latestChange){
+    public static LineBlameResult of(History.HistoryInfo<? extends CodeElement> latestChange, int i){
         if (latestChange == null) return null;
-        int lineNumber = latestChange.getElementAfter().getLocation().getStartLine();
+//        int lineNumber = latestChange.getElementAfter().getLocation().getStartLine();
         return new LineBlameResult(latestChange.getCommitId(),
                 latestChange.getElementAfter().getFilePath(),
                 latestChange.getElementBefore().getFilePath(),
                 latestChange.getCommitterName(),
                 latestChange.getCommitTime(),
-                lineNumber);
+                i);
     }
     public static LineBlameResult of(BlameResult blameResult, int i) {
         if (blameResult == null || i < 0 || i >= blameResult.getResultContents().size()) return null;

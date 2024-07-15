@@ -47,7 +47,7 @@ public class CodeTrackerBlame implements IBlame {
 
     private LineBlameResult getBlameInfo(Repository repository, String commitId, String filePath, int lineNumber) {
         History.HistoryInfo<? extends CodeElement> latestChange = getLineBlame(repository, commitId, filePath, lineNumber);
-        return LineBlameResult.of(latestChange);
+        return LineBlameResult.of(latestChange, lineNumber);
     }
 
 

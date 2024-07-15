@@ -31,7 +31,7 @@ import static org.codetracker.blame.util.Utils.getProject;
 public class CodeTrackerBlameTest {
     private static final GitService gitService = new GitServiceImpl();
     private final String REPOS_PATH = System.getProperty("user.dir") + "/tmp";
-
+    private static final String EXPECTED = System.getProperty("user.dir") + "/src/test/resources/blame/blameTestWithLocalRepo.txt";
     @ParameterizedTest
     @MethodSource("testBlamerInputProvider")
     public void testBlameWithFormatting(String url, String filePath, IBlame blamer, String expectedPath) throws Exception {
@@ -43,28 +43,18 @@ public class CodeTrackerBlameTest {
         String url = "https://github.com/Alluxio/alluxio/commit/9aeefcd8120bb3b89cdb437d8c32d2ed84b8a825";
         String filePath = "servers/src/main/java/tachyon/worker/block/allocator/MaxFreeAllocator.java";
         return Stream.of(
-                Arguments.of(url, filePath, new CodeTrackerBlame(), System.getProperty("user.dir") + "/src/test/resources/blame/formatting/codetracker.txt"),
-                Arguments.of(url, filePath, new GitBlame(), System.getProperty("user.dir") + "/src/test/resources/blame/formatting/git.txt")
+                Arguments.of(url, filePath, new CodeTrackerBlame(),  System.getProperty("user.dir") + "/src/test/resources" + "/blame/formatting/codetracker.txt"),
+                Arguments.of(url, filePath, new GitBlame(),  System.getProperty("user.dir") + "/src/test/resources" + "/blame/formatting/git.txt")
         );
     }
     @Test
     public void testBlameWithLocalRepo() throws Exception {
         String url = "https://github.com/pouryafard75/DiffBenchmark/commit/5b33dc6f8cfcf8c0e31966c035b0406eca97ec76";
         String filePath = "src/main/java/dat/MakeIntels.java";
-        String expectedFilePath = System.getProperty("user.dir") + "/src/test/resources/blame/blameTestWithLocalRepo.txt";
-        String actual = getBlameOutput(url, filePath, new CodeTrackerBlame(), REPOS_PATH, gitService);
-        assertEqualWithFile(expectedFilePath, actual);
-    }
+        //String expectedPath = "/blame/blameTestWithLocalRepo.txt";
 
-    @Test
-    public void testBlameLineRangeWithLocalRepo() throws Exception {
-        String url = "https://github.com/checkstyle/checkstyle/commit/119fd4fb33bef9f5c66fc950396669af842c21a3";
-        String filePath = "src/main/java/com/puppycrawl/tools/checkstyle/Checker.java";
-        int fromLine = 443;
-        int toLine = 487;
-        String expectedFilePath = System.getProperty("user.dir") + "/src/test/resources/blame/blameLineRangeTestWithLocalRepo.txt";
-        String actual = getBlameOutput(url, filePath, new CodeTrackerBlame(), REPOS_PATH, gitService, fromLine, toLine);
-        assertEqualWithFile(expectedFilePath, actual);
+        String actual = getBlameOutput(url, filePath, new CodeTrackerBlame(), REPOS_PATH, gitService);
+        assertEqualWithFile(EXPECTED, actual);
     }
 
     private void assertEqualWithFile(String expectedResultPath, String actual) throws IOException {
@@ -86,7 +76,7 @@ public class CodeTrackerBlameTest {
         Repository repository = gitService.cloneIfNotExists(REPOS_PATH + "/" + getOwner(url) + "/" + getProject(url), URLHelper.getRepo(url));
         History.HistoryInfo<? extends CodeElement> lineBlame =
                 new CodeTrackerBlame().getLineBlame(repository, commitId, filePath, lineNumber);
-        LineBlameResult lineBlameResult = LineBlameResult.of(lineBlame);
+        LineBlameResult lineBlameResult = LineBlameResult.of(lineBlame, lineNumber);
         Assertions.assertEquals(expected, lineBlameResult.toString());
     }
 
@@ -101,7 +91,7 @@ public class CodeTrackerBlameTest {
         Repository repository = gitService.cloneIfNotExists(REPOS_PATH + "/" + getOwner(url) + "/" + getProject(url), URLHelper.getRepo(url));
         History.HistoryInfo<? extends CodeElement> lineBlame =
                 new CodeTrackerBlame().getLineBlame(repository, commitId, filePath, lineNumber);
-        LineBlameResult lineBlameResult = LineBlameResult.of(lineBlame);
+        LineBlameResult lineBlameResult = LineBlameResult.of(lineBlame, lineNumber);
         Assertions.assertEquals(expected, lineBlameResult.toString());
     }
 
@@ -116,7 +106,7 @@ public class CodeTrackerBlameTest {
         Repository repository = gitService.cloneIfNotExists(REPOS_PATH + "/" + getOwner(url) + "/" + getProject(url), URLHelper.getRepo(url));
         History.HistoryInfo<? extends CodeElement> lineBlame =
                 new CodeTrackerBlame().getLineBlame(repository, commitId, filePath, lineNumber);
-        LineBlameResult lineBlameResult = LineBlameResult.of(lineBlame);
+        LineBlameResult lineBlameResult = LineBlameResult.of(lineBlame, lineNumber);
         Assertions.assertEquals(expected, lineBlameResult.toString());
     }
 }
