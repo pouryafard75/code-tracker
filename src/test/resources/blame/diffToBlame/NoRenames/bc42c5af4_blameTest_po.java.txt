@@ -1,0 +1,13 @@
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 1)  class po{
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 2)      void run(){
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 3)          print("hello");
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 4)          sleep(10);
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 5)      }
+                                                                    6)
+11f11ce06 blameTest/po.java (Pouryafard75 2024-10-10 20:05:06 +0000 7)      void exe(){
+bce1e231a blameTest/po.java (Pouryafard75 2024-10-10 20:05:14 +0000 8)          run(5);
+11f11ce06 blameTest/po.java (Pouryafard75 2024-10-10 20:05:06 +0000 9)      }
+                                                                    10)
+bc42c5af4 blameTest/po.java (Pouryafard75 2024-10-10 20:06:14 +0000 11)     int a = 10;
+                                                                    12)
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 13) }

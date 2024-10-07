@@ -101,27 +101,22 @@ public abstract class AbstractCliGitBlame implements IBlame {
         if (matcher.find()) {
             // Extract the committer and timestamp
             commiter = matcher.group(1).trim(); // Everything before the timestamp
-            commiter = commiter.substring(1); // Remove the parentheses
-            String timestamp = matcher.group(2).trim(); // Timestamp
+            if (!commiter.isEmpty()) {
+                commiter = commiter.substring(1); // Remove the parentheses
+                String timestamp = matcher.group(2).trim(); // Timestamp
 
 
-            // Define the formatter for the timestamp
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
+                // Define the formatter for the timestamp
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
 
-            // Parse the timestamp string
-            OffsetDateTime offsetDateTime = OffsetDateTime.parse(timestamp, formatter);
+                // Parse the timestamp string
+                OffsetDateTime offsetDateTime = OffsetDateTime.parse(timestamp, formatter);
 
-            // Convert to Instant
-            Instant instant = offsetDateTime.toInstant();
-            commitTime = instant.toEpochMilli() / 1000;
+                // Convert to Instant
+                Instant instant = offsetDateTime.toInstant();
+                commitTime = instant.toEpochMilli() / 1000;
+            }
         }
         return new LineBlameResult(blameCommitId, filePath, prevFilePath, commiter, "", commitTime, resultLineNumber, lineNumber);
-    }
-
-    @Override
-    public List<LineBlameResult> blameFile(Repository repository, String commitId, String filePath, int fromLine, int toLine) throws Exception {
-        // Implement logic to blame a specific range of lines in a file
-        // This method is optional and can be implemented based on the requirements
-        throw new UnsupportedOperationException("Not implemented");
     }
 }

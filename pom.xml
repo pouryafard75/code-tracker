@@ -135,7 +135,36 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.17.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>ca.concordia.export</groupId>
+            <artifactId>lhdiff</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>7.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>7.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.concordia.export</groupId>
+            <artifactId>sdiff</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.15.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.3</version>
+        </dependency>
     </dependencies>
     <distributionManagement>
         <snapshotRepository>

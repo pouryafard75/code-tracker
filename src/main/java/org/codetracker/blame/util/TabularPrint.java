@@ -7,7 +7,7 @@ public class TabularPrint {
     static final boolean ENABLE_BORDERS = false;
     private static final int PADDING = 1;
 
-    public static String make(List<String[]> data) {
+    public static String make(List<String[]> data) throws RuntimeException{
         StringBuilder sb = new StringBuilder();
         if (data.isEmpty())
             return "No data to print";
@@ -24,7 +24,7 @@ public class TabularPrint {
     private static String printRow(String[] row, int[] columnWidths, boolean showBorders) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < row.length; i++) {
-            sb.append(String.format("%-" + (columnWidths[i] - 1) + "s", row[i]));
+            sb.append(String.format("%-" + Math.max(1, (columnWidths[i] - 1)) + "s", row[i]));
             if (showBorders) {
                 sb.append(" | ");
             } else {

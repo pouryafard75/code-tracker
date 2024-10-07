@@ -6,16 +6,50 @@ import org.eclipse.jgit.blame.BlameResult;
 
 /* Created by pourya on 2024-07-02*/
 public class LineBlameResult {
-    private final String commitId;
-    private final String filePath;
-    private final String shortCommitId;
-    private final String beforeFilePath;
-    private final String committer;
-    private final String parentCommitId;
-    private final long commitDate;
-    private final int resultLineNumber;
+//    private String parentCommitId;
+    private String commitId;
+    private String filePath;
+    private String shortCommitId;
+    private String beforeFilePath;
+    private String committer;
+    private long commitDate;
+    private int resultLineNumber;
+    private int originalLineNumber; //This is the original line number (the one that you pass as the input)
 
-    private final int originalLineNumber; //This is the original line number (the one that you pass as the input)
+    public void setCommitId(String commitId) {
+        this.commitId = commitId;
+        this.shortCommitId = shortCID(commitId);
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setShortCommitId(String shortCommitId) {
+        this.shortCommitId = shortCommitId;
+    }
+
+    public void setBeforeFilePath(String beforeFilePath) {
+        this.beforeFilePath = beforeFilePath;
+    }
+
+    public void setCommitter(String committer) {
+        this.committer = committer;
+    }
+
+    public void setCommitDate(long commitDate) {
+        this.commitDate = commitDate;
+    }
+
+    public void setResultLineNumber(int resultLineNumber) {
+        this.resultLineNumber = resultLineNumber;
+    }
+
+    public void setOriginalLineNumber(int originalLineNumber) {
+        this.originalLineNumber = originalLineNumber;
+    }
+
+    LineBlameResult(){}
 
     @Override
     public String toString() {
@@ -30,17 +64,21 @@ public class LineBlameResult {
                 '}';
     }
 
-    public LineBlameResult(String commitId, String filePath, String beforeFilePath, String committer, String parentCommitId, long commitDate, int resultLineNumber, int originalLineNumber) {
+    public  LineBlameResult(String commitId, String filePath, String beforeFilePath, String committer, String parentCommitId, long commitDate, int resultLineNumber, int originalLineNumber) {
         this.commitId = commitId;
         this.filePath = filePath;
-        this.shortCommitId = (commitId == null || commitId.isEmpty()) ? "" : commitId.substring(0, 9);
+        this.shortCommitId = shortCID(commitId);
         this.beforeFilePath = beforeFilePath;
         this.committer = committer;
-        this.parentCommitId = parentCommitId;
+//        this.parentCommitId = parentCommitId;
         this.commitDate = commitDate;
         this.resultLineNumber = resultLineNumber;
         this.originalLineNumber = originalLineNumber;
 
+    }
+
+    private String shortCID(String commitId) {
+        return (commitId == null || commitId.isEmpty()) ? "" : commitId.substring(0, 9);
     }
 
     public String getCommitId() {
@@ -75,9 +113,6 @@ public class LineBlameResult {
         return originalLineNumber;
     }
 
-    public String getParentCommitId() {
-        return parentCommitId;
-    }
 
 
     public static LineBlameResult Null(int originalLineNumber) {
@@ -86,9 +121,13 @@ public class LineBlameResult {
     public static LineBlameResult of(History.HistoryInfo<? extends CodeElement> latestChange, int lineNumber) {
         if (latestChange == null) return Null(lineNumber);
         int resultLineNumber = latestChange.getElementAfter().getLocation().getStartLine();
+        String prevFile = latestChange.getElementBefore().getFilePath();
+        if (!latestChange.getElementAfter().getFilePath().equals(latestChange.getElementBefore().getFilePath()))
+            prevFile = latestChange.getElementAfter().getFilePath();
+
         return new LineBlameResult(latestChange.getCommitId(),
                 latestChange.getElementAfter().getFilePath(),
-                latestChange.getElementBefore().getFilePath(),
+                prevFile,
                 latestChange.getCommitterName(),
                 latestChange.getParentCommitId(),
                 latestChange.getCommitTime(),
@@ -102,6 +141,14 @@ public class LineBlameResult {
         int resultLineNumber = blameResult.getSourceLine(i);
         long commitTime = blameResult.getSourceCommit(i).getCommitTime();
         String filePath = blameResult.getSourcePath(i);
-        return new LineBlameResult(commitId, blameResult.getResultPath(), filePath, committerName, "", commitTime, resultLineNumber, i + 1);
+        return new LineBlameResult(commitId, blameResult.getResultPath(), filePath, committerName, "", commitTime, resultLineNumber + 1, i + 1);
     }
+
+//    public String getParentCommitId() {
+//        return parentCommitId;
+//    }
+
+//    public void setParentCommitId(String parentCommitId) {
+//        this.parentCommitId = parentCommitId;
+//    }
 }

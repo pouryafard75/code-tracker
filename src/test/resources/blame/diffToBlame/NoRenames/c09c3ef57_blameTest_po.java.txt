@@ -1,0 +1,8 @@
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 1) class po{
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 2)     void run(){
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 3)         print("hello");
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 4)         sleep(10);
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 5)     }
+                                                                    6)
+                                                                    7)
+c09c3ef57 blameTest/po.java (Pouryafard75 2024-10-10 20:04:50 +0000 8) }
