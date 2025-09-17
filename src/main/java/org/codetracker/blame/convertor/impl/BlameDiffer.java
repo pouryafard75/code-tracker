@@ -23,7 +23,7 @@ public class BlameDiffer {
 //    protected BiPredicate<Integer, List<String>> emptyLinesCondition = (lineNumber, content) -> content.get(lineNumber-1).trim().isEmpty();
     protected final Predicate<String> ignoreCondition;
     protected Map<Integer, List<String>> certificate; // jic
-    private boolean _dump = true;
+    private boolean _dump = false;
 
     public Map<Integer, List<String>> getCertificate() {
         return certificate;
@@ -67,28 +67,26 @@ public class BlameDiffer {
         return true;
     }
     public final BlameDifferResult diff(Repository repository, String commitId, String filePath) throws Exception {
-        Map<IBlameTool, List<LineBlameResult>> blameResults = prepareResults(repository, commitId, filePath);
-        List<String> content = Utils.getFileContentByCommit(repository, commitId, filePath);
-        if (_dump) new BlameWriter(repository, commitId, filePath).dump(blameResults, content);
-        benchmarkRecordManager = new LineNumberToCommitIDRecordManager();
-        benchmarkRecordManager.diff(blameResults);
-
-        Map<Integer, Map<IBlameTool, String>> table = benchmarkRecordManager.getRegistry();
-        table.entrySet().removeIf(entry  -> ignoreCondition.test(content.get(entry.getKey() - 1)));
+        Map<Integer, Map<IBlameTool, String>> table = generateTable(prepareResults(repository, commitId, filePath), repository, commitId, filePath);
         int legitSize = table.size();
         table =  process(repository, commitId, filePath, table);
         return getBlameDifferResult(repository, commitId, filePath, table, legitSize);
     }
 
-    public final BlameDifferResult diff(Repository repository, String commitId, String filePath, int fromLine, int toLine) throws Exception {
-        Map<IBlameTool, List<LineBlameResult>> blameResults = prepareResults(repository, commitId, filePath, fromLine, toLine);
-        List<String> content = Utils.getFileContentByCommit(repository, commitId, filePath);
-        if (_dump) new BlameWriter(repository, commitId, filePath).dump(blameResults, content);
+    public Map<Integer, Map<IBlameTool, String>> generateTable(Map<IBlameTool, List<LineBlameResult>> repository, Repository repository1, String commitId, String filePath) throws Exception {
+        Map<IBlameTool, List<LineBlameResult>> blameResults = repository;
+        List<String> content = Utils.getFileContentByCommit(repository1, commitId, filePath);
+        if (_dump) new BlameWriter(repository1, commitId, filePath).dump(blameResults, content);
         benchmarkRecordManager = new LineNumberToCommitIDRecordManager();
         benchmarkRecordManager.diff(blameResults);
 
         Map<Integer, Map<IBlameTool, String>> table = benchmarkRecordManager.getRegistry();
-        table.entrySet().removeIf(entry  -> ignoreCondition.test(content.get(entry.getKey() - 1)));
+        table.entrySet().removeIf(entry -> ignoreCondition.test(content.get(entry.getKey() - 1)));
+        return table;
+    }
+
+    public final BlameDifferResult diff(Repository repository, String commitId, String filePath, int fromLine, int toLine) throws Exception {
+        Map<Integer, Map<IBlameTool, String>> table = generateTable(prepareResults(repository, commitId, filePath, fromLine, toLine), repository, commitId, filePath);
         int legitSize = table.size();
         table =  process(repository, commitId, filePath, table);
         return getBlameDifferResult(repository, commitId, filePath, table, legitSize);
@@ -104,7 +102,7 @@ public class BlameDiffer {
         return table;
     }
 
-    private Map<IBlameTool, List<LineBlameResult>> prepareResults(Repository repository, String commitId, String filePath) throws Exception {
+    public Map<IBlameTool, List<LineBlameResult>> prepareResults(Repository repository, String commitId, String filePath) throws Exception {
         Map<IBlameTool, List<LineBlameResult>> blameResults = runBlamers(repository, commitId, filePath);
         verify(blameResults);
         return blameResults;
